@@ -36,18 +36,21 @@
 			host: proxyR[0],
 			port: parseInt(proxyR[1])
 		}
-		let r = await startFind(url, extent, findKey.value, proxyObj, delayTime.value, (total, current) => {
+		let numbers = 0;
+		let r = await startFind(url, extent, findKey.value, proxyObj, delayTime.value, (total, current, data) => {
 			progress.value = ((current / total) * 100).toFixed(2);
+			let list = [];
+			data.forEach((item, key) => {
+				list.push({
+					number: ++numbers,
+					href: `${protocol}://${Forumsdomain.value}${item.href[0]==='/'?'':'/'}${item.href}`,
+					text: `${item.subtitle}`
+				})
+			});
+			tableData.list = [...tableData.list, ...list];
 		});
 		//console.log(r);
-		let list = [];
-		r.forEach((item, key) => {
-			list.push({
-				number: key + 1,
-				href: `${protocol}://${Forumsdomain.value}${item.href[0]==='/'?'':'/'}${item.href}`,
-				text: `${item.subtitle}`
-			})
-		});
+
 		console.log(list);
 		tableData.list = list;
 	}

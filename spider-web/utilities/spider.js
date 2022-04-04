@@ -12,6 +12,7 @@ async function findCurrent(url, key, result, proxy) {
 		let html = response.data;
 		//console.log(html)
 		let index = 0;
+		let fragment = []
 		while (index !== -1) {
 			index = html.indexOf(key, index);
 			// console.log(index);
@@ -28,14 +29,16 @@ async function findCurrent(url, key, result, proxy) {
 				let textStart = html.indexOf(">", textA + 2);
 				let textEnd = html.indexOf("</", textStart + 1);
 				let text = html.substring(textStart + 1, textEnd);
-				result.push({
+				let data = {
 					href: `${href}`,
 					subtitle: text
-				});
+				}
+				result.push(data);
+				fragment.push(data);
 				index = index + key.length;
 			}
 		}
-		rs(true);
+		rs(fragment);
 	})
 }
 async function Sleep(delay) {
@@ -59,7 +62,7 @@ export async function startFind(urlTmp, extent, key, proxy, delay, callback) {
 			const url = urlTmp.replace(/{page}/, "" + i);
 			//console.log(url)
 			let r = await findCurrent(url, key, list, proxy);
-			callback(extent[1] - extent[0] + 1, current);
+			callback(extent[1] - extent[0] + 1, current,r);
 			if (i < extent[1]) {
 				let w = await Sleep(delay);
 			}
